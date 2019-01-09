@@ -210,6 +210,15 @@ class crow
     void merge_context(const json& context);
 
     /*!
+     * @brief set context information to payload for future events
+     *
+     * @param[in] context the context to set
+     *
+     * @since 0.0.6
+     */
+    void SetContext(const json& context);
+
+    /*!
      * @brief reset context for future events
      *
      * @post context is in the same state as it was after construction
