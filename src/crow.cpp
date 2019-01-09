@@ -131,9 +131,10 @@ void crow::capture_message(const std::string& message,
 
         // extra
         auto extra = attributes.find("extra");
-        if (extra != attributes.end())
-        {
-            m_payload["extra"] = *extra;
+        if (extra != attributes.end()) {
+          m_payload["extra"] = *extra;
+        } else {
+          m_payload.erase("extra");
         }
     }
 
@@ -261,23 +262,13 @@ void crow::add_extra_context(const json& data)
     m_payload["extra"].update(data);
 }
 
-void crow::merge_context(const json& context)
-{
-    if (context.is_object())
-    {
-        std::lock_guard<std::mutex> lock(m_payload_mutex);
-        for (const auto& el : context.items())
-        {
-            if (el.key() == "user" or el.key() == "request" or el.key() == "extra" or el.key() == "tags")
-            {
-                m_payload[el.key()].update(el.value());
-            }
-            else
-            {
-                throw std::runtime_error("invalid context");
-            }
-        }
+void crow::merge_context(const json& context) {
+  if (context.is_object()) {
+    std::lock_guard<std::mutex> lock(m_payload_mutex);
+    for (const auto& el : context.items()) {
+      m_payload[el.key()].update(el.value());
     }
+  }
 }
 
 void crow::clear_context()
